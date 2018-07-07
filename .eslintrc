@@ -3,5 +3,8 @@
     "canonical",
     "canonical/lodash"
   ],
-  "root": true
+  "root": true,
+  "rules":{
+    "linebreak-style": 0
+  }  
 }
