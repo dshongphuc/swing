@@ -125,9 +125,25 @@ const Card = (stack, targetElement, prepend) => {
       })();
     });
 
+    eventEmitter.on('panup', (event) => {
+      event.deltaY = 0
+      event.deltaX = 0
+    });
+
+    eventEmitter.on('pandown', (event) => {
+      event.deltaY = 0
+      event.deltaX = 0
+    });
+
     eventEmitter.on('panmove', (event) => {
-      currentX = event.deltaX;
-      currentY = event.deltaY;
+      if(event.additionalEvent != "panup" && event.additionalEvent != "pandown"){
+        currentX = event.deltaX;
+        currentY = event.deltaY; 
+      }else{
+        event.deltaY = 0
+        event.deltaX = 0
+      }
+      
     });
 
     eventEmitter.on('panend', (event) => {
@@ -219,6 +235,14 @@ const Card = (stack, targetElement, prepend) => {
       isPanning = false;
       eventEmitter.trigger('panend', event);
     });
+
+    mc.on('panup', (event) => {
+      eventEmitter.trigger('panup', event);
+    });
+
+    mc.on('pandown', (event) => {
+      eventEmitter.trigger('pandown', event);
+    });    
 
     springThrowIn.addListener({
       onSpringAtRest: () => {

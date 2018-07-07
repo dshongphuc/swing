@@ -146,9 +146,24 @@ var Card = function Card(stack, targetElement, prepend) {
       })();
     });
 
+    eventEmitter.on('panup', function (event) {
+      event.deltaY = 0;
+      event.deltaX = 0;
+    });
+
+    eventEmitter.on('pandown', function (event) {
+      event.deltaY = 0;
+      event.deltaX = 0;
+    });
+
     eventEmitter.on('panmove', function (event) {
-      currentX = event.deltaX;
-      currentY = event.deltaY;
+      if (event.additionalEvent != "panup" && event.additionalEvent != "pandown") {
+        currentX = event.deltaX;
+        currentY = event.deltaY;
+      } else {
+        event.deltaY = 0;
+        event.deltaX = 0;
+      }
     });
 
     eventEmitter.on('panend', function (event) {
@@ -234,6 +249,14 @@ var Card = function Card(stack, targetElement, prepend) {
     mc.on('panend', function (event) {
       isPanning = false;
       eventEmitter.trigger('panend', event);
+    });
+
+    mc.on('panup', function (event) {
+      eventEmitter.trigger('panup', event);
+    });
+
+    mc.on('pandown', function (event) {
+      eventEmitter.trigger('pandown', event);
     });
 
     springThrowIn.addListener({

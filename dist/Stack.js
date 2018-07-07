@@ -78,6 +78,7 @@ var Stack = function Stack(config) {
    * @returns {Card}
    */
   stack.createCard = function (element, prepend) {
+
     var card = (0, _Card2.default)(stack, element, prepend);
     var events = ['throwout', 'throwoutend', 'throwoutleft', 'throwoutright', 'throwoutup', 'throwoutdown', 'throwin', 'throwinend', 'dragstart', 'dragmove', 'dragend'];
 

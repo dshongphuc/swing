@@ -59,6 +59,7 @@ const Stack = (config) => {
    * @returns {Card}
    */
   stack.createCard = (element, prepend) => {
+
     const card = Card(stack, element, prepend);
     const events = [
       'throwout',
