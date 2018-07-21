@@ -52,6 +52,12 @@ var gcySlider = {
 				allowDirection = true
 			}
 		});
+	    mc.on('panmove', (event) => {
+			if(event.additionalEvent == "panleft" || event.additionalEvent == "panright"){
+				allowDirection = false
+			}
+		});		
+
 
 		slider.ontouchmove = function(e){
 			if(e.touches[0].pageY <= pageY){
