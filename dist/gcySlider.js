@@ -1,8 +1,13 @@
 import Hammer from 'hammerjs';
 var gcySlider = {	
 	Start: function(){
+	try{	
 		var sliders = document.getElementsByClassName('slider-wrapper');
 		var slider = sliders[sliders.length-1];
+		var likeIcon = document.getElementById('like-animation');
+		var dislikeIcon = document.getElementById('dislike-animation');
+		var sliderWidth = slider.clientWidth;
+		var sliderHeight = slider.clientHeight;
 
 		//Register Hammer instance
 	    var mc = new Hammer.Manager(slider, {
@@ -55,9 +60,54 @@ var gcySlider = {
 	    mc.on('panmove', (event) => {
 			if(event.additionalEvent == "panleft" || event.additionalEvent == "panright"){
 				allowDirection = false
+				var percentage = Math.abs(event.deltaX) / (sliderWidth/100);
+				var distance = (sliderHeight/200)*percentage;
+				var translateDistance = (distance > sliderHeight/2) ? sliderHeight/2 : distance;
+				var scaleDistance = 1 + (percentage/50);
+				if(event.deltaX > 0){
+					likeIcon.style.opacity = (percentage/50);
+					likeIcon.style.transform = "translateY(-"+translateDistance+"px) scale("+scaleDistance+")";
+				}else{
+				dislikeIcon.style.opacity = (percentage/50);
+				dislikeIcon.style.transform = "translateY(-"+translateDistance+"px) scale("+scaleDistance+")";					
+				}
 			}
 		});		
-
+	    mc.on('panend', (event) => {
+	    	if(event.deltaX > 0){
+		    	if(event.deltaX < sliderWidth/100*60){
+		    		likeIcon.style.opacity = 0;
+		    		likeIcon.style.transform = "translateY(0) scale(1)";
+		    	}else{
+		    		likeIcon.style.transition = "transform .2s";
+		    		likeIcon.style.opacity = 1;
+		    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+		    		likeIcon.setAttribute('class','likedAnimation');
+		    		setTimeout(() => {
+		    			likeIcon.style.opacity = 0;
+		    			likeIcon.style.transition = "unset";
+		    			likeIcon.style.transform = "translateY(0) scale(1)";
+		    			likeIcon.setAttribute('class','');
+		    		},300)
+		    	}
+	    	}else{
+		    	if(Math.abs(event.deltaX) < sliderWidth/100*60){
+		    		dislikeIcon.style.opacity = 0;
+		    		dislikeIcon.style.transform = "translateY(0) scale(1)";
+		    	}else{
+		    		dislikeIcon.style.transition = "transform .2s";
+		    		dislikeIcon.style.opacity = 1;
+		    		dislikeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+		    		dislikeIcon.setAttribute('class','likedAnimation');
+		    		setTimeout(() => {
+		    			dislikeIcon.style.opacity = 0;
+		    			dislikeIcon.style.transition = "unset";
+		    			dislikeIcon.style.transform = "translateY(0) scale(1)";
+		    			dislikeIcon.setAttribute('class','');
+		    		},300)
+		    	}	    		
+	    	}
+	    });		    
 
 		slider.ontouchmove = function(e){
 			if(e.touches[0].pageY <= pageY){
@@ -139,6 +189,7 @@ var gcySlider = {
 				activeNav = navigation.getElementsByClassName('current')[0]	
 			}
 		}
+	}catch(error){}
 	}
 }
 export default gcySlider;
