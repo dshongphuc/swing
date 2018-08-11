@@ -4,6 +4,8 @@ var gcySlider = {
 	try{	
 		var sliders = document.getElementsByClassName('slider-wrapper');
 		var slider = sliders[sliders.length-1];
+		var sliderListWrapper = slider.querySelector('#sliderListWrapper');// I mean the <ul>
+
 		var likeIcon = document.getElementById('like-animation');
 		var dislikeIcon = document.getElementById('dislike-animation');
 		var sliderWidth = slider.clientWidth;
@@ -44,6 +46,8 @@ var gcySlider = {
 		var pageY = 0;
 		var YStart = 0;
 		var allowDirection = false;
+		var currentPosition = 0;
+		var currentSlider = 1;
 
 		slider.ontouchstart = function(e){
 			YStart = e.touches[0].pageY;
@@ -115,23 +119,20 @@ var gcySlider = {
 			}else{
 				touchUp = false;
 			}
-			
 			pageY = e.touches[0].pageY;
-
 			var distance = allowDirection ? pageY - YStart : 0;
-
+			sliderListWrapper.style.transition = "none";
 			if(touchUp){
-				if(!activeSlide.nextSibling){
-					activeSlide.style.marginTop = ((distance > 25)?distance:-25)+"px";	
+				if(!activeSlide.nextSibling){		
+					sliderListWrapper.style.transform = "translateY("+(distance < -25 ? currentPosition-25 : currentPosition + distance)+"px)";	
 				}else{
-					activeSlide.style.marginTop = distance+"px";
+					sliderListWrapper.style.transform = "translateY("+(currentPosition + distance)+"px)";
 				}
 			}else{
 				if(!activeSlide.previousSibling){
-					activeSlide.style.marginTop = ((distance < 25)?distance:25)+"px";	
+					sliderListWrapper.style.transform = "translateY("+(distance > 25 ? 25 : currentPosition + distance)+"px)";
 				}else{
-					//activeSlide.style.marginTop = distance+"px";
-					activeSlide.previousSibling.style.marginTop = "-"+(activeSlide.clientHeight-distance)+"px";
+					sliderListWrapper.style.transform = "translateY("+(currentPosition + distance)+"px)";
 				}				
 			}
 
@@ -139,27 +140,28 @@ var gcySlider = {
 		slider.ontouchend = function(e){
 			pageY = activeSlide.clientHeight;//reset pageY
 			allowDirection = false //reset allowDirection
+			sliderListWrapper.style.transition = "all .2s";
 			if(Math.abs(e.changedTouches[0].pageY - YStart) < 50){
-				activeSlide.style.marginTop = 0;
-				if(!touchUp){
-					activeSlide.previousSibling.style.marginTop = "-"+activeSlide.clientHeight+"px";
-				}
+				sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
 			}
 			else if(touchUp){
 				if(activeSlide.nextSibling){
-					activeSlide.style.marginTop = "-"+activeSlide.clientHeight+"px";
-					addActive("next");					
+					addActive("next");	
+					currentPosition = -pageY*currentSlider;
+					sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
+					currentSlider++;				
 				}else{
-					activeSlide.style.marginTop = 0;
+					sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
 				}
 
 			}else{
 				if(activeSlide.previousSibling){			
-					activeSlide.previousSibling.style.marginTop = "0";
-					activeSlide.style.marginTop = "0";
 					addActive("previous");
+					currentPosition += pageY
+					sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
+					currentSlider--;
 				}else{
-					activeSlide.style.marginTop = 0;
+					sliderListWrapper.style.transform = "translateY(0px)";
 				}
 			}
 			
