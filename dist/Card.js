@@ -64,6 +64,7 @@ var computeDirection = function computeDirection(fromX, fromY, allowedDirections
  * @returns {Object} An instance of Card.
  */
 var Card = function Card(stack, targetElement, prepend) {
+  var allowDirection = false;
   var card = void 0;
   var config = void 0;
   var currentX = void 0;
@@ -125,25 +126,26 @@ var Card = function Card(stack, targetElement, prepend) {
       Card.appendToParent(targetElement);
     }
 
-    eventEmitter.on('panstart', function () {
-      Card.appendToParent(targetElement);
+    eventEmitter.on('panstart', function (e) {
+      if(e.additionalEvent == "panleft" || e.additionalEvent == "panright"){
+        allowDirection = true;
+        Card.appendToParent(targetElement);
+        eventEmitter.trigger('dragstart', {
+          target: targetElement
+        });
 
-      eventEmitter.trigger('dragstart', {
-        target: targetElement
-      });
+        currentX = 0;
+        currentY = 0;
+        isDraging = true;
 
-      currentX = 0;
-      currentY = 0;
+          (function animation() {
+            if (isDraging) {
+              doMove();
 
-      isDraging = true;
-
-      (function animation() {
-        if (isDraging) {
-          doMove();
-
-          (0, _raf2.default)(animation);
-        }
-      })();
+              (0, _raf2.default)(animation);
+            }
+          })();
+      }
     });
 
     eventEmitter.on('panup', function (event) {
@@ -167,21 +169,24 @@ var Card = function Card(stack, targetElement, prepend) {
     });
 
     eventEmitter.on('panend', function (event) {
-      isDraging = false;
+      if(allowDirection){
+        isDraging = false;
 
-      var coordinateX = lastTranslate.coordinateX + event.deltaX;
-      var coordinateY = lastTranslate.coordinateY + event.deltaY;
+        var coordinateX = lastTranslate.coordinateX + event.deltaX;
+        var coordinateY = lastTranslate.coordinateY + event.deltaY;
 
-      var isThrowOut = config.isThrowOut(coordinateX, coordinateY, targetElement, config.throwOutConfidence(coordinateX, coordinateY, targetElement));
+        var isThrowOut = config.isThrowOut(coordinateX, coordinateY, targetElement, config.throwOutConfidence(coordinateX, coordinateY, targetElement));
 
-      // Not really sure about computing direction here and filtering on directions here.
-      // It adds more logic. Any suggestion will be appreciated.
-      var direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
+        // Not really sure about computing direction here and filtering on directions here.
+        // It adds more logic. Any suggestion will be appreciated.
+        var direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
 
-      if (isThrowOut && direction !== _Direction2.default.INVALID) {
-        card.throwOut(coordinateX, coordinateY, direction);
-      } else {
-        card.throwIn(coordinateX, coordinateY, direction);
+        if (isThrowOut && direction !== _Direction2.default.INVALID) {
+          card.throwOut(coordinateX, coordinateY, direction);
+        } else {
+            card.throwIn(coordinateX, coordinateY, direction);
+        }
+        allowDirection = false;
       }
 
       eventEmitter.trigger('dragend', {
@@ -192,8 +197,8 @@ var Card = function Card(stack, targetElement, prepend) {
     // "mousedown" event fires late on touch enabled devices, thus listening
     // to the touchstart event for touch enabled devices and mousedown otherwise.
     if ((0, _utilities.isTouchDevice)()) {
-      targetElement.addEventListener('touchstart', function () {
-        eventEmitter.trigger('panstart');
+      targetElement.addEventListener('touchstart', function (event) {
+        eventEmitter.trigger('panstart', event);
       });
 
       targetElement.addEventListener('touchend', function () {
@@ -224,8 +229,8 @@ var Card = function Card(stack, targetElement, prepend) {
         });
       })();
     } else {
-      targetElement.addEventListener('mousedown', function () {
-        eventEmitter.trigger('panstart');
+      targetElement.addEventListener('mousedown', function (event) {
+        eventEmitter.trigger('panstart', event);
       });
 
       targetElement.addEventListener('mouseup', function () {
