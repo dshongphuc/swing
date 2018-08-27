@@ -81,7 +81,7 @@ var gcySlider = {
 	    mc.on('panend', (event) => {
 	    	if(!allowDirection){
 		    	if(event.deltaX > 0){
-			    	if(event.deltaX < sliderWidth/100*60){
+			    	if(event.deltaX < sliderWidth/100*50){
 			    		likeIcon.style.opacity = 0;
 			    		likeIcon.style.transform = "translateY(0) scale(1)";
 			    	}else{
@@ -97,7 +97,7 @@ var gcySlider = {
 			    		},300)
 			    	}
 		    	}else{
-			    	if(Math.abs(event.deltaX) < sliderWidth/100*60){
+			    	if(Math.abs(event.deltaX) < sliderWidth/100*50){
 			    		dislikeIcon.style.opacity = 0;
 			    		dislikeIcon.style.transform = "translateY(0) scale(1)";
 			    	}else{

@@ -474,7 +474,7 @@ Card.makeConfig = function () {
  * @returns {undefined}
  */
 Card.transform = function (element, coordinateX, coordinateY, rotation) {
-  element.style[(0, _vendorPrefix2.default)('transform')] = 'translate3d(0, 0, 0) translate(' + coordinateX + 'px, ' + coordinateY + 'px) rotate(' + rotation + 'deg)';
+  element.style[(0, _vendorPrefix2.default)('transform')] = 'translate3d(0, 0, 0) translateX(' + coordinateX + 'px) rotate(' + rotation + 'deg)';
 };
 
 /**
