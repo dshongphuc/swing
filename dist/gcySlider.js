@@ -1,5 +1,25 @@
 import Hammer from 'hammerjs';
-var gcySlider = {	
+var gcySlider = {
+	likedFunction: function(){ 
+		var sliders = document.getElementsByClassName('slider-wrapper');
+		var slider = sliders[sliders.length-1];
+		var sliderListWrapper = slider.querySelector('#sliderListWrapper');// I mean the <ul>
+
+		var likeIcon = document.getElementById('like-animation');
+		var dislikeIcon = document.getElementById('dislike-animation');
+		var sliderWidth = slider.clientWidth;
+		var sliderHeight = slider.clientHeight;		
+			    		likeIcon.style.transition = "transform 1s";
+			    		likeIcon.style.opacity = 1;
+			    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+			    		likeIcon.setAttribute('class','likedAnimation');
+			    		setTimeout(() => {
+			    			likeIcon.style.opacity = 0;
+			    			likeIcon.style.transition = "unset";
+			    			likeIcon.style.transform = "translateY(0) scale(1)";
+			    			likeIcon.setAttribute('class','');
+			    		},1000)	
+	},
 	Start: function(){
 	try{	
 		var sliders = document.getElementsByClassName('slider-wrapper');
@@ -23,6 +43,20 @@ var gcySlider = {
 	      ]
 	    });		
 		
+
+	     var likedFunction = function likedFunction(){ 
+			    		likeIcon.style.transition = "transform .2s";
+			    		likeIcon.style.opacity = 1;
+			    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+			    		likeIcon.setAttribute('class','likedAnimation');
+			    		setTimeout(() => {
+			    			likeIcon.style.opacity = 0;
+			    			likeIcon.style.transition = "unset";
+			    			likeIcon.style.transform = "translateY(0) scale(1)";
+			    			likeIcon.setAttribute('class','');
+			    		},300)	    	
+	    }
+
 		var navigation = slider.querySelector("#gcyNavigation");
 		//Add class .active to first li if it not exist
 		slider.getElementsByTagName('li')[0].classList.add('active')
@@ -56,12 +90,12 @@ var gcySlider = {
 		/**
 		 * Well, I don't want my slider work when user pan left or right, so I do this
 		 */
-	    mc.on('panstart', (event) => {
+	    mc.on('panstart', function(event) {
 			if(event.additionalEvent == "panup" || event.additionalEvent == "pandown"){
 				allowDirection = true
 			}
 		});
-	    mc.on('panmove', (event) => {
+	    mc.on('panmove', function(event) {
 	    	if(!allowDirection){
 				if(event.additionalEvent == "panleft" || event.additionalEvent == "panright"){
 					var percentage = Math.abs(event.deltaX) / (sliderWidth/100);
@@ -78,23 +112,14 @@ var gcySlider = {
 				}
 	    	}
 		});		
-	    mc.on('panend', (event) => {
+	    mc.on('panend', function(event) {
 	    	if(!allowDirection){
 		    	if(event.deltaX > 0){
 			    	if(event.deltaX < sliderWidth/100*50){
 			    		likeIcon.style.opacity = 0;
 			    		likeIcon.style.transform = "translateY(0) scale(1)";
 			    	}else{
-			    		likeIcon.style.transition = "transform .2s";
-			    		likeIcon.style.opacity = 1;
-			    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
-			    		likeIcon.setAttribute('class','likedAnimation');
-			    		setTimeout(() => {
-			    			likeIcon.style.opacity = 0;
-			    			likeIcon.style.transition = "unset";
-			    			likeIcon.style.transform = "translateY(0) scale(1)";
-			    			likeIcon.setAttribute('class','');
-			    		},300)
+			    		this.likedFunction()
 			    	}
 		    	}else{
 			    	if(Math.abs(event.deltaX) < sliderWidth/100*50){
@@ -198,47 +223,10 @@ var gcySlider = {
 				activeNav = navigation.getElementsByClassName('current')[0]	
 			}
 		}
+
 	}catch(error){}
 	}
-}
-export default gcySlider;
-		/*slider.onmousedown = function(e){
-			isMouseDown = true;
-			YStart = e.pageY;
-		}
-		slider.onmousemove = function(e){
-			if(isMouseDown){
-				if(e.pageY < pageY){
-					touchUp = true;
-				}else{
-					touchUp = false;
-				}
-				pageY = e.pageY;
-				if(touchUp){
-					activeSlide.style.marginTop = (pageY - YStart)+"px";
-				}else{
-					activeSlide.style.marginTop = (pageY - YStart)+"px";
-				}
-			}
-		}
-		slider.onmouseup = function(){
-			isMouseDown = false;
-			
-			if(touchUp){
-				if(activeSlide.nextSibling.nextElementSibling != null){
-					activeSlide.style.marginTop = "-"+activeSlide.clientHeight+"px";
-					addActive("next");					
-				}else{
-					activeSlide.style.marginTop = 0;
-				}
 
-			}else{
-				if(activeSlide.previousSibling.previousElementSibling != null){
-					activeSlide.style.marginTop = "0";
-					activeSlide.previousSibling.previousElementSibling.style.marginTop = "0";
-					addActive("previous");
-				}else{
-					activeSlide.style.marginTop = 0;
-				}
-			}			
-		}*/
+}
+
+export default gcySlider;
