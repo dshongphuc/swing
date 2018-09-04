@@ -1,27 +1,45 @@
 import Hammer from 'hammerjs';
 var gcySlider = {
-	likedFunction: function(){ 
+	likedFunction: function(){
 		var sliders = document.getElementsByClassName('slider-wrapper');
 		var slider = sliders[sliders.length-1];
 		var sliderListWrapper = slider.querySelector('#sliderListWrapper');// I mean the <ul>
-
 		var likeIcon = document.getElementById('like-animation');
 		var dislikeIcon = document.getElementById('dislike-animation');
 		var sliderWidth = slider.clientWidth;
-		var sliderHeight = slider.clientHeight;		
-			    		likeIcon.style.transition = "transform 1s";
-			    		likeIcon.style.opacity = 1;
-			    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
-			    		likeIcon.setAttribute('class','likedAnimation');
-			    		setTimeout(() => {
-			    			likeIcon.style.opacity = 0;
-			    			likeIcon.style.transition = "unset";
-			    			likeIcon.style.transform = "translateY(0) scale(1)";
-			    			likeIcon.setAttribute('class','');
-			    		},1000)	
+		var sliderHeight = slider.clientHeight;
+		likeIcon.style.transition = "transform .7s";
+		likeIcon.style.opacity = 1;
+		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+		likeIcon.setAttribute('class','likedAnimation');
+		setTimeout(() => {
+			likeIcon.style.opacity = 0;
+			likeIcon.style.transition = "unset";
+			likeIcon.style.transform = "translateY(0) scale(1)";
+			likeIcon.setAttribute('class','');
+		},800)
+	},
+	dislikedFunction: function(){
+		var sliders = document.getElementsByClassName('slider-wrapper');
+		var slider = sliders[sliders.length-1];
+		var sliderListWrapper = slider.querySelector('#sliderListWrapper');// I mean the <ul>
+		var likeIcon = document.getElementById('like-animation');
+		var dislikeIcon = document.getElementById('dislike-animation');
+		var sliderWidth = slider.clientWidth;
+		var sliderHeight = slider.clientHeight;
+		dislikeIcon.style.transition = "transform 1s";
+		dislikeIcon.style.opacity = 1;
+		dislikeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+		dislikeIcon.setAttribute('class','likedAnimation');
+		setTimeout(() => {
+			dislikeIcon.style.opacity = 0;
+			dislikeIcon.style.transition = "unset";
+			dislikeIcon.style.transform = "translateY(0) scale(1)";
+			dislikeIcon.setAttribute('class','');
+		},1000)
 	},
 	Start: function(){
-	try{	
+	try{
 		var sliders = document.getElementsByClassName('slider-wrapper');
 		var slider = sliders[sliders.length-1];
 		var sliderListWrapper = slider.querySelector('#sliderListWrapper');// I mean the <ul>
@@ -41,10 +59,10 @@ var gcySlider = {
 	          }
 	        ]
 	      ]
-	    });		
-		
+	    });
 
-	     var likedFunction = function likedFunction(){ 
+
+	     var likedFunction = function likedFunction(){
 			    		likeIcon.style.transition = "transform .2s";
 			    		likeIcon.style.opacity = 1;
 			    		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
@@ -54,7 +72,7 @@ var gcySlider = {
 			    			likeIcon.style.transition = "unset";
 			    			likeIcon.style.transform = "translateY(0) scale(1)";
 			    			likeIcon.setAttribute('class','');
-			    		},300)	    	
+			    		},300)
 	    }
 
 		var navigation = slider.querySelector("#gcyNavigation");
@@ -107,39 +125,48 @@ var gcySlider = {
 						likeIcon.style.transform = "translateY(-"+translateDistance+"px) scale("+scaleDistance+")";
 					}else{
 					dislikeIcon.style.opacity = (percentage/50);
-					dislikeIcon.style.transform = "translateY(-"+translateDistance+"px) scale("+scaleDistance+")";					
+					dislikeIcon.style.transform = "translateY(-"+translateDistance+"px) scale("+scaleDistance+")";
 					}
 				}
 	    	}
-		});		
+		});
 	    mc.on('panend', function(event) {
 	    	if(!allowDirection){
 		    	if(event.deltaX > 0){
-			    	if(event.deltaX < sliderWidth/100*50){
+			    	if(event.deltaX < sliderWidth/100*45){
 			    		likeIcon.style.opacity = 0;
 			    		likeIcon.style.transform = "translateY(0) scale(1)";
 			    	}else{
-			    		this.likedFunction()
+							likeIcon.style.transition = "transform .3s";
+							likeIcon.style.opacity = 1;
+							likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
+							likeIcon.setAttribute('class','likedAnimationShort');
+							setTimeout(() => {
+								likeIcon.style.opacity = 0;
+								likeIcon.style.transition = "unset";
+								likeIcon.style.transform = "translateY(0) scale(1)";
+								likeIcon.setAttribute('class','');
+							},400)
 			    	}
 		    	}else{
-			    	if(Math.abs(event.deltaX) < sliderWidth/100*50){
+			    	if(Math.abs(event.deltaX) < sliderWidth/100*45){
 			    		dislikeIcon.style.opacity = 0;
 			    		dislikeIcon.style.transform = "translateY(0) scale(1)";
 			    	}else{
 			    		dislikeIcon.style.transition = "transform .2s";
 			    		dislikeIcon.style.opacity = 1;
 			    		dislikeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
-			    		dislikeIcon.setAttribute('class','likedAnimation');
+			    		dislikeIcon.setAttribute('class','likedAnimationShort');
 			    		setTimeout(() => {
 			    			dislikeIcon.style.opacity = 0;
 			    			dislikeIcon.style.transition = "unset";
 			    			dislikeIcon.style.transform = "translateY(0) scale(1)";
 			    			dislikeIcon.setAttribute('class','');
 			    		},300)
-			    	}	    		
+			    	}
 		    	}
 	    	}
-	    });		    
+	    });
 
 		slider.ontouchmove = function(e){
 			if(allowDirection){
@@ -152,8 +179,8 @@ var gcySlider = {
 				var distance = pageY - YStart;
 				sliderListWrapper.style.transition = "none";
 				if(touchUp){
-					if(!activeSlide.nextSibling){		
-						sliderListWrapper.style.transform = "translateY("+(distance < -25 ? currentPosition-25 : currentPosition + distance)+"px)";	
+					if(!activeSlide.nextSibling){
+						sliderListWrapper.style.transform = "translateY("+(distance < -25 ? currentPosition-25 : currentPosition + distance)+"px)";
 					}else{
 						sliderListWrapper.style.transform = "translateY("+(currentPosition + distance)+"px)";
 					}
@@ -162,7 +189,7 @@ var gcySlider = {
 						sliderListWrapper.style.transform = "translateY("+(distance > 25 ? 25 : currentPosition + distance)+"px)";
 					}else{
 						sliderListWrapper.style.transform = "translateY("+(currentPosition + distance)+"px)";
-					}				
+					}
 				}
 			}
 		}
@@ -176,16 +203,16 @@ var gcySlider = {
 			else if(touchUp){
 				if(activeSlide.nextSibling){
 					//activeSlide.style.marginTop = "-"+activeSlide.clientHeight+"px";
-					addActive("next");	
+					addActive("next");
 					currentPosition = -pageY*currentSlider;
 					sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
-					currentSlider++;				
+					currentSlider++;
 				}else{
 					sliderListWrapper.style.transform = "translateY("+currentPosition+"px)";
 				}
 
 			}else{
-				if(activeSlide.previousSibling){			
+				if(activeSlide.previousSibling){
 					//activeSlide.previousSibling.style.marginTop = "0";
 					//activeSlide.style.marginTop = "0";
 					addActive("previous");
@@ -196,9 +223,9 @@ var gcySlider = {
 					sliderListWrapper.style.transform = "translateY(0px)";
 				}
 			}
-			
+
 		}
-		
+
 
 		function addActive(direction){
 			if(direction == "next"){
@@ -210,7 +237,7 @@ var gcySlider = {
 				//Change .current to next sibling
 				activeNav.nextSibling.setAttribute('class','current')
 				activeNav.setAttribute('class','')
-				activeNav = navigation.getElementsByClassName('current')[0]			
+				activeNav = navigation.getElementsByClassName('current')[0]
 			}else{
 				//Change .active to previous sibling
 				activeSlide.previousSibling.setAttribute('class','active')
@@ -220,7 +247,7 @@ var gcySlider = {
 				//Change .current to previous sibling
 				activeNav.previousSibling.setAttribute('class','current')
 				activeNav.setAttribute('class','')
-				activeNav = navigation.getElementsByClassName('current')[0]	
+				activeNav = navigation.getElementsByClassName('current')[0]
 			}
 		}
 
