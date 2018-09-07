@@ -12,7 +12,7 @@ var gcySlider = {
 		likeIcon.style.opacity = 1;
 		likeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
 		likeIcon.setAttribute('class','likedAnimation');
-		setTimeout(() => {
+		setTimeout(function() {
 			likeIcon.style.opacity = 0;
 			likeIcon.style.transition = "unset";
 			likeIcon.style.transform = "translateY(0) scale(1)";
@@ -31,7 +31,7 @@ var gcySlider = {
 		dislikeIcon.style.opacity = 1;
 		dislikeIcon.style.transform = "translateY(-"+sliderHeight/2+"px) scale(15)";
 		dislikeIcon.setAttribute('class','likedAnimation');
-		setTimeout(() => {
+		setTimeout(function() {
 			dislikeIcon.style.opacity = 0;
 			dislikeIcon.style.transition = "unset";
 			dislikeIcon.style.transform = "translateY(0) scale(1)";
